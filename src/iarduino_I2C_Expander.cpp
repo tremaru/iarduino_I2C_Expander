@@ -2,29 +2,30 @@
 																														//
 //		Инициализация расширителя выводов:																				//	Возвращаемое значение: результат инициализации.
 bool	iarduino_I2C_Expander::begin			(void){																	//	Параметр: отсутствует
+			uint8_t j;																									//	Объявляем переменную для сравнения идентификатора чипа.
 //			Инициируем работу с шиной I2C:																				//
 			objI2C->begin(100);																							//	Инициируем передачу данных по шине I2C на скорости 100 кГц.
 //			Если адрес не указан, то ищим модуль на шине I2C:															//
 			if(valAddrTemp==0){																							//
 				for(int i=1; i<127; i++){																				//	Проходим по всем адресам на шине I2C
-					if( objI2C->checkAddress(i)								){											//	Если на шине I2C есть устройство с адресом i, то ...
-					if( objI2C->readByte(i,REG_MODEL)      == DEF_MODEL		){											//	Если у модуля с адресом i в регистре «MODEL»   хранится значение DEF_MODEL   (светодиодная матрица ), то ...
-					if( objI2C->readByte(i,REG_CHIP_ID)    == DEF_CHIP_ID	){											//	Если у модуля с адресом i в регистре «CHIP_ID» хранится значение DEF_CHIP_ID (идентификатор модулей), то ...
-					if( objI2C->readByte(i,REG_ADDRESS)>>1 == i				){	valAddrTemp=i; i=128;	}else			//	Если у модуля с адресом i в регистре «ADDRESS» хранится значение i           ( адрес + младший бит ), то cчитаем что модуль обнаружен, сохраняем значение i как найденный адрес и выходим из цикла.
-					if( objI2C->readByte(i,REG_ADDRESS)    == 0xFF			){	valAddrTemp=i; i=128;	}				//	Если у модуля с адресом i в регистре «ADDRESS» хранится значение 0xFF        ( адрес не задавался  ), то cчитаем что модуль обнаружен, сохраняем значение i как найденный адрес и выходим из цикла.
+					if( objI2C->checkAddress(i)									){										//	Если на шине I2C есть устройство с адресом i, то ...
+					if( objI2C->readByte(i,REG_MODEL)      == DEF_MODEL			){										//	Если у модуля с адресом i в регистре «MODEL»   хранится значение DEF_MODEL    ( расширитель выводов ), то ...
+					j = objI2C->readByte(i,REG_CHIP_ID); if( j == DEF_CHIP_ID1  ||	j==DEF_CHIP_ID2			){			//	Если у модуля с адресом i в регистре «CHIP_ID» хранится значение DEF_CHIP_ID1 (идентификатор модулей Flash), или DEF_CHIP_ID2 (идентификатор модулей Metro), то ...
+					if( objI2C->readByte(i,REG_ADDRESS)>>1 == i					){	valAddrTemp=i; i=128;	}else		//	Если у модуля с адресом i в регистре «ADDRESS» хранится значение i            ( адрес + младший бит ), то cчитаем что модуль обнаружен, сохраняем значение i как найденный адрес и выходим из цикла.
+					if( objI2C->readByte(i,REG_ADDRESS)    == 0xFF				){	valAddrTemp=i; i=128;	}			//	Если у модуля с адресом i в регистре «ADDRESS» хранится значение 0xFF         ( адрес не задавался  ), то cчитаем что модуль обнаружен, сохраняем значение i как найденный адрес и выходим из цикла.
 					}																									//
 					}																									//
 					}																									//
 				}																										//
 			}																											//
 //			Если модуль не найден, то возвращаем ошибку инициализации:													//
-			if( valAddrTemp == 0											){return false;}							//
+			if( valAddrTemp == 0																	){return false;}	//
 //			Проверяем наличие модуля и значения его регистров:															//
-			if( objI2C->checkAddress(valAddrTemp)            == false		){return false;}							//	Если на шине I2C нет устройств с адресом valAddrTemp,                   то возвращаем ошибку инициализации
-			if( objI2C->readByte(valAddrTemp,REG_MODEL)      != DEF_MODEL	){return false;}							//	Если значение регистра «MODEL»   не совпадает со значением DEF_MODEL,   то возвращаем ошибку инициализации
-			if( objI2C->readByte(valAddrTemp,REG_CHIP_ID)    != DEF_CHIP_ID	){return false;}							//	Если значение регистра «CHIP_ID» не совпадает со значением DEF_CHIP_ID, то возвращаем ошибку инициализации
-			if( objI2C->readByte(valAddrTemp,REG_ADDRESS)>>1 != valAddrTemp	){											//	Если значение регистра «ADDRESS» не совпадает с адресом модуля,         то ...
-			if( objI2C->readByte(valAddrTemp,REG_ADDRESS)    != 0xFF		){return false;}}							//	Если значение регистра «ADDRESS» не совпадает со значением 0xFF,        то возвращаем ошибку инициализации
+			if( objI2C->checkAddress(valAddrTemp)            == false								){return false;}	//	Если на шине I2C нет устройств с адресом valAddrTemp,                   то возвращаем ошибку инициализации
+			if( objI2C->readByte(valAddrTemp,REG_MODEL)      != DEF_MODEL							){return false;}	//	Если значение регистра «MODEL»   не совпадает со значением DEF_MODEL,   то возвращаем ошибку инициализации
+			j = objI2C->readByte(valAddrTemp,REG_CHIP_ID); if( j!=DEF_CHIP_ID1 && j!=DEF_CHIP_ID2	){return false;}	//	Если значение регистра «CHIP_ID» не совпадает со значением DEF_CHIP_ID1 и DEF_CHIP_ID2, то возвращаем ошибку инициализации
+			if( objI2C->readByte(valAddrTemp,REG_ADDRESS)>>1 != valAddrTemp							){					//	Если значение регистра «ADDRESS» не совпадает с адресом модуля,         то ...
+			if( objI2C->readByte(valAddrTemp,REG_ADDRESS)    != 0xFF								){return false;}}	//	Если значение регистра «ADDRESS» не совпадает со значением 0xFF,        то возвращаем ошибку инициализации
 //			Определяем значения переменных:																				//	
 			valAddr=valAddrTemp;																						//	Сохраняем адрес модуля на шине I2C.
 			valVers=objI2C->readByte(valAddr,REG_VERSION);																//	Сохраняем версию прошивки модуля.
