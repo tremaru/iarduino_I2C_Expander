@@ -11,6 +11,8 @@
 	reset	KEYWORD2
 	getAddress	KEYWORD2
 	getVersion	KEYWORD2
+	getPullI2C	KEYWORD2
+	setPullI2C	KEYWORD2
 	pinMode	KEYWORD2
 	pinPull	KEYWORD2
 	pinOutScheme	KEYWORD2
