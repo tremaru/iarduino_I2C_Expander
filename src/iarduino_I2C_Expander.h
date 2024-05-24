@@ -1,5 +1,5 @@
 //	Библиотека для работы с расширителем выводов: https://iarduino.ru/shop/Expansion-payments/rasshiritel-vyvodov-i2c---flash-trema-modul.html
-//  Версия: 1.0.7
+//  Версия: 1.0.8
 //  Последнюю версию библиотеки Вы можете скачать по ссылке: http://iarduino.ru/file/520.html
 //  Подробное описание функции бибилиотеки доступно по ссылке: https://wiki.iarduino.ru/page/trema-extender/
 //  Библиотека является собственностью интернет магазина iarduino.ru и может свободно использоваться и распространяться!
