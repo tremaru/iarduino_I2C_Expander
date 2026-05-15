@@ -20,7 +20,7 @@ uint8_t newAddress = 0x09;                                          //   Наз�
 SoftTwoWire sWire(3,4);                                             //   Создаём объект программной шины I2C указав выводы которым будет назначена роль линий: SDA, SCL.
                                                                     //
 #include <iarduino_I2C_Expander.h>                                  //   Подключаем библиотеку для работы с расширителем выводов.
-iarduino_I2C_Expander gpio;                                         //   Объявляем объект gpio для работы с функциями и методами библиотеки iarduino_I2C_Expander.
+iarduino_I2C_Expander gpio;                                         //   Создаём объект gpio для работы с функциями и методами библиотеки iarduino_I2C_Expander.
                                                                     //   Если при объявлении объекта указать адрес, например, gpio(0xBB), то пример будет работать с тем модулем, адрес которого был указан.
 void setup(){                                                       //
     Serial.begin(9600);                                             //
